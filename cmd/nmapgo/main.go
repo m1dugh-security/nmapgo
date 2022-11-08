@@ -4,6 +4,7 @@ import (
     "log"
     "encoding/json"
     "fmt"
+    . "github.com/m1dugh/nmapgo/pkg/nmapgo"
 )
 
 

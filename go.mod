@@ -1,3 +1,3 @@
-module github.com/m1dugh/go-nmap
+module github.com/m1dugh/nmapgo
 
 go 1.19

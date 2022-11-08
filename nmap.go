@@ -7,7 +7,6 @@ import (
     "fmt"
     "os"
     "runtime"
-    "log"
     "math/rand"
 )
 
@@ -63,7 +62,7 @@ func GenerateRandomName() string {
 }
 
 type Scanner struct {
-    Options Options
+    Options *Options
     binPath string
     outputDir string
 }
@@ -94,7 +93,7 @@ func getBinPath() (string, error) {
     return path, err
 }
 
-func NewScanner(options Options) (*Scanner, error) {
+func NewScanner(options *Options) (*Scanner, error) {
     dir, err := GetTempDir()
     if err != nil {
         return nil, err
@@ -113,7 +112,7 @@ func (s *Scanner) getRandomFile() string {
     return fmt.Sprintf("%s/%s", s.outputDir, GenerateRandomName())
 }
 
-func (s *Scanner) ScanHosts(addr ...string) ([]Host, error) {
+func (s *Scanner) ScanHost(addr string) (*Host, error) {
 
     file := s.getRandomFile();
     cmd := exec.Command(s.binPath,
@@ -126,11 +125,19 @@ func (s *Scanner) ScanHosts(addr ...string) ([]Host, error) {
     if err != nil {
         return nil, err
     }
+
+    fmt.Println(cmd)
+    if err != nil {
+        return nil, err
+    }
     if err := cmd.Start(); err != nil {
         return nil, err
     }
 
-    data, _ := ioutil.ReadAll(stderr)
+    data, err := ioutil.ReadAll(stderr)
+    if err != nil {
+        return nil, err
+    }
 
     if err = cmd.Wait(); err != nil {
         return nil, errors.New(fmt.Sprintf("An error occured while running command: \n%s", string(data)))
@@ -138,12 +145,20 @@ func (s *Scanner) ScanHosts(addr ...string) ([]Host, error) {
 
     hosts, err := ExtractInfo(file)
     if err != nil {
-        log.Fatal(err)
+        return nil, err
     }
 
+    /* 
+    TODO: remove file
     err = os.Remove(file)
     if err != nil {
         return nil, err
+    } */
+    if len(hosts) > 0 {
+        res := &Host{}
+        *res = hosts[0]
+        return res, nil
+    } else {
+        return nil, nil
     }
-    return hosts, nil
 }

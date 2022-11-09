@@ -148,12 +148,10 @@ func (s *Scanner) ScanHost(addr string) (*Host, error) {
         return nil, err
     }
 
-    /* 
-    TODO: remove file
     err = os.Remove(file)
     if err != nil {
         return nil, err
-    } */
+    }
     if len(hosts) > 0 {
         res := &Host{}
         *res = hosts[0]

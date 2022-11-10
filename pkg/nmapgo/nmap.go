@@ -105,6 +105,10 @@ func NewScanner(options *Options) (*Scanner, error) {
     if err != nil {
         return nil, err
     }
+
+    if options == nil {
+        options = NewOptions()
+    }
     return &Scanner{options, path, dir}, nil
 }
 

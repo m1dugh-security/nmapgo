@@ -130,7 +130,6 @@ func (s *Scanner) ScanHost(addr string) (*Host, error) {
         return nil, err
     }
 
-    fmt.Println(cmd)
     if err != nil {
         return nil, err
     }
